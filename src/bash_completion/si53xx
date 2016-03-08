@@ -1,0 +1,72 @@
+# This file is part of si53xx, see <https://qu1x.org/si53xx>.
+# 
+# Copyright (c) 2016 Rouven Spreckels <n3vu0r@qu1x.org>
+# 
+# si53xx is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License version 3
+# as published by the Free Software Foundation on 19 November 2007.
+# 
+# si53xx is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with si53xx. If not, see <https://www.gnu.org/licenses>.
+
+_si53xx()
+{
+	local cur=${COMP_WORDS[$COMP_CWORD]}
+
+	case "${COMP_WORDS[$COMP_CWORD - 1]}" in
+		-p|--port)
+			COMPREPLY=( $(compgen -W 'i2c2l mpsse' -- $cur) )
+		;;
+		-a|--addr)
+			if grep -qG "^[0-9a-f]\{2\}$" <<< "$cur"; then
+				COMPREPLY=( $cur )
+			else
+				COMPREPLY=( $(compgen -W "p0 p1" -- $cur) )
+			fi
+		;;
+		-r|--rate)
+			if grep -qG "^[0-9]\+$" <<< "$cur" && [ "$cur" -le 400 ]; then
+				COMPREPLY=( $cur )
+			else
+				COMPREPLY=( $(compgen -W "100 400" -- $cur) )
+			fi
+		;;
+		-M|--set-interrupt-mask)
+			COMPREPLY=( $(compgen -W "s=1,c=1,f=1,p=1 \
+				sys_cal=1,los_clkin=1,los_fdbk=1,pll_lol=1" -- $cur) )
+		;;
+		-T|--set-sticky-status)
+			COMPREPLY=( $(compgen -W "s=0,c=0,f=0,p=0 \
+				sys_cal=0,los_clkin=0,los_fdbk=0,pll_lol=0" -- $cur) )
+		;;
+		*)
+			COMPREPLY=( $(compgen -W '\
+				-p --port
+				-a --addr
+				-r --rate
+				-n --get-part-number
+				-i --get-interrupt
+				-I --get-sticky-interrupt
+				-m --get-interrupt-mask
+				-M --set-interrupt-mask
+				-s --get-status
+				-t --get-sticky-status
+				-T --set-sticky-status
+				-h --help
+				-v --version
+			' -- $cur) )
+
+			local IFS=$'\n'
+			COMPREPLY=( ${COMPREPLY[@]} $(shopt -s extglob \
+				&& compgen -f -o plusdirs -X '!*.@(map|pos|neg)' -- $cur) )
+		;;
+	esac
+
+}
+
+complete -o filenames -F _si53xx si53xx

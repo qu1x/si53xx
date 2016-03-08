@@ -1,0 +1,62 @@
+#! /bin/sh
+
+# This file is part of si53xx, see <https://qu1x.org/si53xx>.
+# 
+# Copyright (c) 2016 Rouven Spreckels <n3vu0r@qu1x.org>
+# 
+# si53xx is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License version 3
+# as published by the Free Software Foundation on 19 November 2007.
+# 
+# si53xx is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with si53xx. If not, see <https://www.gnu.org/licenses>.
+
+test "$1" = -- && shift
+test $# -ge 2 || {
+	echo "si53xx-cmp - si53xx transition map generator"
+	echo 
+	echo "si53xx-cmp [--] [OLD NEW...]"
+	echo 
+	echo "  Compare each NEW .map file to the one OLD .map file and generate"
+	echo "  corresponding .pos/.neg transition map files containing positive"
+	echo "  and negative differences only, respectively."
+	echo
+	echo "  With no files, print this help."
+	echo 
+	echo "For complete documentation, run \`man si53xx-cmp'."
+	exit
+}
+
+map_file() { echo "$1" | grep -qG '\.map$'; }
+
+pos_file() { echo "$1" | sed 's/\.map$/.pos/'; }
+neg_file() { echo "$1" | sed 's/\.map$/.neg/'; }
+
+old_data() { sed '/^ff/d' "$1"; }
+new_data() { echo "$1" | diff - "$2"; test $? -ne 2; }
+
+clr_page() { sed '/^ff/{N;/\nff/d}'; }
+
+pos_data() { echo "$1" | sed '/^>/!d;s/^> //' | clr_page; }
+neg_data() { echo "$1" | sed '/^\(<\|> ff\)/!d;s/^. //' | clr_page; }
+
+old_file=$1
+map_file "$old_file" || {
+	>&2 echo 'OLD is not a .map file'
+	exit 64
+}
+old_data=$(old_data "$old_file") || exit 65
+
+shift
+for new_file; do
+	if map_file "$new_file" && test "$old_file" != "$new_file"; then
+		new_data=$(new_data "$old_data" "$new_file") || exit 66
+		pos_data "$new_data" > "$(pos_file "$new_file")" || exit 67
+		neg_data "$new_data" > "$(neg_file "$new_file")" || exit 68
+	fi
+done

@@ -1,0 +1,139 @@
+.\" This file is part of si53xx, see <https://qu1x.org/si53xx>.
+.\" 
+.\" Copyright (c) 2016 Rouven Spreckels <n3vu0r@qu1x.org>
+.\" 
+.\" si53xx is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU Affero General Public License version 3
+.\" as published by the Free Software Foundation on 19 November 2007.
+.\" 
+.\" si53xx is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+.\" GNU Affero General Public License for more details.
+.\" 
+.\" You should have received a copy of the GNU Affero General Public License
+.\" along with si53xx. If not, see <https://www.gnu.org/licenses>.
+.\"
+.TH si53xx 1 "March 8, 2016" "si53xx\-1.0.0" "si53xx"
+.SH NAME
+si53xx \- si53xx controller
+.SH SYNOPSIS
+.B si53xx
+[\fIOPTION\fR]... [\-\-] [\fIMAP\fR|\fIPOS\fR|\fINEG\fR]...
+.SH DESCRIPTION
+Control si53xx device by applying \fIMAP\fR, \fIPOS\fR, \fINEG\fR files. Where
+\fIPOS\fR, \fINEG\fR files contain only the differences of compared \fIMAP\fR
+files in order to speed up transactions, see \fBsi53xx\-cmp(1)\fR.
+.PP
+For even further speed ups along extracting the differences of various maps, a
+burst\-write mode is used for continuous register sequences not requiring a
+read\-modify\-write, that is, having incremental addresses and masks of
+\fBff\fR.
+.PP
+In burst\-mode it is not necessary to prepend the address to each register value
+via a separate write instruction since the si53xx device is capable of
+auto\-incrementing them as soon as a write instruction contains more than one
+value.
+.SH OPTIONS
+.TP
+\fB\-p\fR, \fB\-\-port\fR \fIPORT\fR (\fBi2c2l\fR)
+Bus interface driver. \fIPORT\fR is one of the following:
+.TP
+\fBi2c2l\fR[://\fIIND\fR]
+With bus index \fIIND\fR of /dev/i2c\-\fIIND\fR. Underlying kernel module is
+\fBi2c\-dev\fR.
+
+\fBNOTE\fR: \fBi2c\-dev\fR is not multi\-master safe.
+.TP
+\fBmpsse\fR[://\fIVID\fR:\fIPID\fR[:\fIIND\fR]]
+With \fIVID\fR as idVendor, \fIPID\fR as idProduct, and optionally \fIIND\fR as
+device index. Underlying libraries are \fBlibmpsse\fR based on \fBlibftdi\fR.
+.PP
+With no details, the corresponding driver automatically selects the first bus
+interface found, starting with the lowest \fIIND\fR.
+.TP
+\fB\-a\fR, \fB\-\-addr\fR \fIADDR\fR (\fBp0\fR)
+Slave device address from \fB08\fR to \fB77\fR. \fIADDR\fR is either given in
+hexadecimals \fBxx\fR or via pin state \fBp0\fR (\fB70\fR) or \fBp1\fR
+(\fB71\fR) for low or high, repsectively.
+.TP
+\fB\-r\fR, \fB\-\-rate\fR \fIRATE\fR (\fB100\fR)
+Transfer rate in \fBkHz\fR.
+
+\fBNOTE\fR: This option has no effect in case of \fBi2c2l\fR driver since it
+expects the rate to be defined as either kernel module option or device tree
+parameter.
+.TP
+\fB\-n\fR, \fB\-\-get\-part\-number\fR
+Get part number.
+.TP
+\fB\-i\fR, \fB\-\-get\-interrupt\fR
+Get interrupt against status.
+.TP
+\fB\-I\fR, \fB\-\-get\-sticky\-interrupt\fR
+Get interrupt against sticky status.
+.TP
+\fB\-m\fR, \fB\-\-get\-interrupt\-mask\fR
+Get interrupt mask.
+
+\fBNOTE\fR: This mask is already inverted, a \fB0\fR here means to ignore.
+.TP
+\fB\-M\fR, \fB\-\-set\-interrupt\-mask\fR \fIDATA\fR
+Set interrupt mask to \fIDATA\fR.
+
+\fBNOTE\fR: This mask is already inverted, a \fB0\fR here means to ignore.
+.TP
+\fB\-s\fR, \fB\-\-get\-status\fR
+Get status.
+.TP
+\fB\-t\fR, \fB\-\-get\-sticky\-status\fR
+Get sticky status.
+.TP
+\fB\-T\fR, \fB\-\-set\-sticky\-status\fR \fIDATA\fR
+Set sticky status to \fIDATA\fR.
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help.
+.TP
+\fB\-v\fR, \fB\-\-version\fR
+Print version information.
+.PP
+\fIDATA\fR is an arbitrary combination of \fBsys_cal\fR, \fBlos_clkin\fR,
+\fBlos_fdbk\fR, \fBpll_lol\fR being comma separated and either \fB0\fR or
+\fB1\fR like \fBlos_clkin=0,los_fdbk=1\fR. Abbreviations \fBs\fR, \fBc\fR,
+\fBf\fR, \fBp\fR are defined, respectively.
+.SH EXIT STATUS
+.TP
+.B 0
+All went fine.
+.PP
+Errors within the user\-defined range from \fB64\fR to \fB113\fR:
+.TP
+.B 64
+Invalid command line argument usage.
+.TP
+.B 65
+Bus interface driver related errors.
+.TP
+.B 113
+Something unexpected happened.
+.SH COPYRIGHT
+Copyright \[co] 2016 Rouven Spreckels <n3vu0r@qu1x.org>
+.PP
+si53xx is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License version 3
+as published by the Free Software Foundation on 19 November 2007.
+.PP
+si53xx is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+.PP
+You should have received a copy of the GNU Affero General Public License
+along with si53xx. If not, see <https://www.gnu.org/licenses>.
+.SH WEBSITE
+<https://qu1x.org/si53xx>
+.SH AUTHORS
+Rouven Spreckels <n3vu0r@qu1x.org>
+.SH SEE ALSO
+.B si53xx\-map(1) si53xx\-cmp(1)

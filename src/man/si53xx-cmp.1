@@ -1,0 +1,85 @@
+.\" This file is part of si53xx, see <https://qu1x.org/si53xx>.
+.\" 
+.\" Copyright (c) 2016 Rouven Spreckels <n3vu0r@qu1x.org>
+.\" 
+.\" si53xx is free software: you can redistribute it and/or modify
+.\" it under the terms of the GNU Affero General Public License version 3
+.\" as published by the Free Software Foundation on 19 November 2007.
+.\" 
+.\" si53xx is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+.\" GNU Affero General Public License for more details.
+.\" 
+.\" You should have received a copy of the GNU Affero General Public License
+.\" along with si53xx. If not, see <https://www.gnu.org/licenses>.
+.\"
+.TH si53xx\-cmp 1 "March 8, 2016" "si53xx\-1.0.0" "si53xx"
+.SH NAME
+si53xx\-cmp \- si53xx transition map generator
+.SH SYNOPSIS
+.B si53xx\-cmp
+[\fIOLD\fR \fINEW\fR...]
+.SH DESCRIPTION
+Compare each \fINEW\fR .map file to the one \fIOLD\fR .map file and generate
+corresponding .pos/.neg transition map files containing positive and negative
+differences only, respectively.
+.PP
+A .pos/.neg file contains only the subset of registers necessary to get from the
+one \fIOLD\fR state to a certain \fINEW\fR state or to revoke it, respectively.
+.PP
+Since a read\-modify\-write procedure against a mask for each register is
+performed just in case the mask is not \fBff\fR, various .pos/.neg files might
+share common registers with different values  without interference as long as
+the features they describe are bitwise orthogonal.
+.PP
+With no files, print help.
+.SH EXIT STATUS
+.TP
+.B 0
+All went fine.
+.PP
+Errors within the user\-defined range from \fB64\fR to \fB113\fR:
+.TP
+.B 64
+\fIOLD\fR is not a .map file.
+.TP
+.B 65
+Cannot read \fIOLD\fR file.
+.TP
+.B 66
+Cannot read \fINEW\fR file.
+.TP
+.B 67
+Cannot write .pos file.
+.TP
+.B 68
+Cannot write .neg file.
+.SH EXAMPLE
+.TP
+.B si53xx\-cmp 25MHz.map 50MHz.map 100MHz.map
+Compare each, 50MHz.map and 100MHz.map, against 25MHz.map and generate
+50MHz.pos and 50MHz.neg, and 100MHz.pos and 100MHz.neg files. 50MHz.pos and
+100MHz.pos will generate an output clock of either 50 MHz or 100 MHz,
+respectively. Both, 50MHz.neg and 100MHz.neg, switch back to the initial 25 MHz
+clock. In this scenario there is no difference between both .neg files.
+.SH COPYRIGHT
+Copyright \[co] 2016 Rouven Spreckels <n3vu0r@qu1x.org>
+.PP
+si53xx is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License version 3
+as published by the Free Software Foundation on 19 November 2007.
+.PP
+si53xx is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+.PP
+You should have received a copy of the GNU Affero General Public License
+along with si53xx. If not, see <https://www.gnu.org/licenses>.
+.SH WEBSITE
+<https://qu1x.org/si53xx>
+.SH AUTHORS
+Rouven Spreckels <n3vu0r@qu1x.org>
+.SH SEE ALSO
+.B si53xx(1) si53xx\-map(1)

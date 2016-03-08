@@ -1,0 +1,45 @@
+#! /bin/sh
+
+# This file is part of si53xx, see <https://qu1x.org/si53xx>.
+# 
+# Copyright (c) 2016 Rouven Spreckels <n3vu0r@qu1x.org>
+# 
+# si53xx is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License version 3
+# as published by the Free Software Foundation on 19 November 2007.
+# 
+# si53xx is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with si53xx. If not, see <https://www.gnu.org/licenses>.
+
+test "$1" = -- && shift
+test $# -ge 1 || {
+	echo "si53xx-map - si53xx map converter"
+	echo 
+	echo "si53xx-map [--] [HDR]..."
+	echo 
+	echo "  Convert and rename HDR .h files to .map files."
+	echo
+	echo "  With no files, print this help."
+	echo 
+	echo "For complete documentation, run \`man si53xx-map'."
+	exit
+}
+
+hdr_file() { echo "$1" | grep -qG '\.h$'; }
+map_file() { echo "$1" | sed 's/\.h$/.map/'; }
+
+hdr_data() { sed '/{[^}]\+}/!d;s/.*{\([^}]\+\)}.*/\1/;s/,/ /g;/00 *$/d' "$1"; }
+map_data() { echo "$1" | xargs -r printf '%02x %02x %02x\n'; }
+
+for hdr_file; do
+	if hdr_file "$hdr_file"; then
+		hdr_data=$(hdr_data "$hdr_file") || exit 64
+		map_data "$hdr_data" > "$(map_file "$hdr_file")" || exit 65
+		rm "$hdr_file" || exit 66;
+	fi
+done
