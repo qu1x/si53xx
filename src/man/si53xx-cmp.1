@@ -14,30 +14,31 @@
 .\" You should have received a copy of the GNU Affero General Public License
 .\" along with si53xx. If not, see <https://www.gnu.org/licenses>.
 .\"
-.TH si53xx\-cmp 1 "March 8, 2016" "si53xx\-1.0.0" "si53xx"
+.TH si53xx\-cmp 1 "May 8, 2016" "si53xx\-1.0.0" "si53xx"
 .SH NAME
 si53xx\-cmp \- si53xx transition map generator
 .SH SYNOPSIS
 .B si53xx\-cmp
 [\fIOLD\fR \fINEW\fR...]
 .SH DESCRIPTION
-Compare each \fINEW\fR .map file to the one \fIOLD\fR .map file and generate
-corresponding .pos/.neg transition map files containing positive and negative
-differences only, respectively.
+Compare each \fINEW\fR .map file with the one \fIOLD\fR .map file and generate
+corresponding .pos and .neg transition map files containing
+positive and negative changes only, respectively.
 .PP
-A .pos/.neg file contains only the subset of registers necessary to get from the
-one \fIOLD\fR state to a certain \fINEW\fR state or to revoke it, respectively.
+A .pos or .neg file contains only the subset of registers necessary to get from
+the one \fIOLD\fR configuration to a certain \fINEW\fR one or to revoke it,
+respectively.
 .PP
 Since a read\-modify\-write procedure against a mask for each register is
-performed just in case the mask is not \fBff\fR, various .pos/.neg files might
-share common registers with different values  without interference as long as
-the features they describe are bitwise orthogonal.
+performed just in case the mask is not \fBff\fR, various .pos or .neg files
+might share common registers with different values without interference as long
+as the features they describe are bitwise orthogonal.
 .PP
 With no files, print help.
 .SH EXIT STATUS
 .TP
 .B 0
-All went fine.
+Success
 .PP
 Errors within the user\-defined range from \fB64\fR to \fB113\fR:
 .TP

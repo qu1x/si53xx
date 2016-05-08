@@ -74,9 +74,7 @@ const char* HELP =
 "  -h, --help                     Print this help.\n"
 "  -v, --version                  Print version information.\n"
 "\n"
-"  Control si53xx device by applying MAP, POS, NEG files. Where POS, NEG\n"
-"  files contain only the differences of compared MAP files in order to\n"
-"  speed up transactions, see `man si53xx-cmp'.\n"
+"  Control si53xx device by OPTIONs and MAP, POS, NEG files in given order.\n"
 "\n"
 "For complete documentation, run `man si53xx'.";
 
@@ -125,13 +123,13 @@ bool opts::parse(int& argc, char**& argv) {
 		{ "port", required_argument, nullptr, 'p' },
 		{ "addr", required_argument, nullptr, 'a' },
 		{ "rate", required_argument, nullptr, 'r' },
-		{ "get-part-number", required_argument, nullptr, 'n' },
-		{ "get-interrupt", required_argument, nullptr, 'i' },
-		{ "get-sticky-interrupt", required_argument, nullptr, 'I' },
-		{ "get-interrupt-mask", required_argument, nullptr, 'm' },
+		{ "get-part-number", no_argument, nullptr, 'n' },
+		{ "get-interrupt", no_argument, nullptr, 'i' },
+		{ "get-sticky-interrupt", no_argument, nullptr, 'I' },
+		{ "get-interrupt-mask", no_argument, nullptr, 'm' },
 		{ "set-interrupt-mask", required_argument, nullptr, 'M' },
-		{ "get-status", required_argument, nullptr, 's' },
-		{ "get-sticky-status", required_argument, nullptr, 't' },
+		{ "get-status", no_argument, nullptr, 's' },
+		{ "get-sticky-status", no_argument, nullptr, 't' },
 		{ "set-sticky-status", required_argument, nullptr, 'T' },
 		{ "help", no_argument, &help, 1 },
 		{ "version", no_argument, &info, 1 },

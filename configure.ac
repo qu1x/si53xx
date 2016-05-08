@@ -33,9 +33,33 @@ AC_LANG([C++])
 
 CXX="$CXX -std=c++14"
 
+AC_CHECK_HEADERS([\
+getopt.h], [], [AC_MSG_ERROR([header not found])])
+
+AC_CHECK_FUNCS([\
+getsubopt \
+getopt_long], [], [AC_MSG_ERROR([function not found])])
+
 AC_CHECK_HEADER([linux/i2c-dev.h], [HAVE_I2C2L=yes], [HAVE_I2C2L=no])
 AM_CONDITIONAL([HAVE_I2C2L], [test x$HAVE_I2C2L = xyes])
 AM_COND_IF([HAVE_I2C2L], [AC_DEFINE([HAVE_I2C2L], [1], [Have i2c2l driver.])])
+AM_COND_IF([HAVE_I2C2L], [AC_CHECK_HEADERS([\
+sys/types.h \
+sys/stat.h \
+fcntl.h \
+sys/ioctl.h \
+unistd.h \
+dirent.h \
+fnmatch.h], [], [AC_MSG_ERROR([header not found])])])
+AM_COND_IF([HAVE_I2C2L], [AC_CHECK_FUNCS([\
+fnmatch \
+scandir \
+alphasort \
+open \
+ioctl \
+write \
+read \
+close], [], [AC_MSG_ERROR([function not found])])])
 
 AC_CHECK_HEADER([mpsse.h], [HAVE_MPSSE=yes], [HAVE_MPSSE=no])
 AM_CONDITIONAL([HAVE_MPSSE], [test x$HAVE_MPSSE = xyes])

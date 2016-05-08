@@ -89,7 +89,7 @@ void i2c2l::set(byte addr, const byte* data, byte size) {
 		throw std::string("Cannot set: Cannot write address plus data: ")
 			+ std::strerror(errno);
 	std::printf("%02x ", slaw);
-	for (auto byte : tx)
+	for (auto byte: tx)
 		std::printf("%02x ", byte);
 	std::printf("\n");
 }

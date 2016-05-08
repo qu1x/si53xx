@@ -34,8 +34,10 @@ mpsse::mpsse(byte addr, std::size_t rate, std::size_t vid, std::size_t pid) {
 	ini(addr);
 }
 
-mpsse::mpsse(byte addr, std::size_t rate, std::size_t vid, std::size_t pid,
-	std::size_t ind) {
+mpsse::mpsse(
+	byte addr, std::size_t rate,
+	std::size_t vid, std::size_t pid, std::size_t ind
+) {
 	ctx = OpenIndex(vid, pid, I2C, rate, MSB, IFACE_ANY, nullptr, nullptr, ind);
 	ini(addr);
 }
@@ -87,7 +89,7 @@ void mpsse::set(byte addr, const byte* data, byte size) {
 	tx.insert(tx.end(), data, data + size);
 	Start(ctx);
 	Write(ctx, (char*)tx.data(), tx.size());
-	for (auto data : tx)
+	for (auto data: tx)
 		std::printf("%02x ", data);
 	std::printf("\n");
 }

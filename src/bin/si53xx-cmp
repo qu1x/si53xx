@@ -22,9 +22,11 @@ test $# -ge 2 || {
 	echo 
 	echo "si53xx-cmp [--] [OLD NEW...]"
 	echo 
-	echo "  Compare each NEW .map file to the one OLD .map file and generate"
-	echo "  corresponding .pos/.neg transition map files containing positive"
-	echo "  and negative differences only, respectively."
+	echo "  Compare each NEW .map file with the one OLD .map file and generate"
+	echo "  corresponding .pos and .neg transition map files with the base name"
+	echo "  of NEW containing only the subset of registers necessary to get"
+	echo "  from the one OLD configuration to a certain NEW configuration or to"
+	echo "  revoke it, respectively."
 	echo
 	echo "  With no files, print this help."
 	echo 
