@@ -30,6 +30,8 @@ public:
 	LOS_CLKIN = 1 << 2,
 	LOS_FDBK = 1 << 3,
 	PLL_LOL = 1 << 4;
+	void disarm();
+	void arm(byte mask = LOS_CLKIN);
 	bool set_register_map(std::string file);
 	std::string get_part_number();
 	bool get_interrupt();
@@ -44,6 +46,8 @@ protected:
 	virtual void get(byte addr, byte* data, byte size) = 0;
 	virtual void set(byte addr, const byte* data, byte size) = 0;
 private:
+	static const timespec rep;
+	static const timespec rst;
 	byte rx(byte addr) { byte data; get(addr, &data, 1); return data; }
 	void tx(byte addr, byte data) { set(addr, &data, 1); }
 	void xx(byte addr, byte data, byte mask);

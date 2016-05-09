@@ -20,12 +20,42 @@
 #include <cstdlib>
 #include <vector>
 
+#include <time.h>
+
+const timespec si53xx::rep = { 0, 5'000'000 };
+
+const timespec si53xx::rst = { 0, 25'000'000 };
+
 void si53xx::xx(byte addr, byte data, byte mask) {
 	if (mask == 0xFF)
 		tx(addr, data);
 	else
 	if (mask != 0x00)
 		tx(addr, (rx(addr) & ~mask) | (data & mask));
+}
+
+void si53xx::disarm() {
+	tx(230, 0x10);
+	tx(241, 0xE5);
+}
+
+void si53xx::arm(byte mask) {
+	for (std::size_t reps = 5; reps
+	&& mask && rx(218) & mask; --reps)
+		nanosleep(&rep, nullptr);
+	tx(49, rx(49) & 0x7F);
+	tx(246, 0x02);
+	nanosleep(&rst, nullptr);
+	tx(241, 0x65);
+	for (std::size_t reps = 5; reps
+	&& mask && rx(218) & (mask | SYS_CAL | PLL_LOL); --reps)
+		nanosleep(&rep, nullptr);
+	byte data[3];
+	get(235, data, sizeof data);
+	data[2] = (rx(47) & 0xFC) | (data[2] & 0x03);
+	set(45, data, sizeof data);
+	tx(49, rx(49) | 0x80);
+	tx(230, 0x00);
 }
 
 bool si53xx::set_register_map(std::string file) {

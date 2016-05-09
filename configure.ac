@@ -34,9 +34,11 @@ AC_LANG([C++])
 CXX="$CXX -std=c++14"
 
 AC_CHECK_HEADERS([\
+time.h \
 getopt.h], [], [AC_MSG_ERROR([header not found])])
 
 AC_CHECK_FUNCS([\
+nanosleep \
 getsubopt \
 getopt_long], [], [AC_MSG_ERROR([function not found])])
 

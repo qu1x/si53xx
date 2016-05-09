@@ -349,6 +349,7 @@ int main(int argc, char** argv) {
 						break;
 					case opts::cmd::set_interrupt_mask:
 						dev->set_interrupt_mask(cmd.data, cmd.mask);
+						std::cout << std::string("## intr_mask\n");
 						break;
 					case opts::cmd::get_status:
 						std::cout << std::string("## status: ") +
@@ -360,13 +361,20 @@ int main(int argc, char** argv) {
 						break;
 					case opts::cmd::set_sticky_status:
 						dev->set_sticky_status(cmd.data, cmd.mask);
+						std::cout << std::string("## status_stk\n");
 						break;
 				}
 			}
-			for (auto map: args.maps) {
-				std::cout << "## " << map << "\n";
-				if (!dev->set_register_map(map))
-					throw std::string(std::strerror(errno));
+			if (args.maps.size()) {
+				dev->disarm();
+				std::cout << "## disarmed\n";
+				for (auto map: args.maps) {
+					if (!dev->set_register_map(map))
+						throw "## " + map + ": " + std::strerror(errno);
+					std::cout << "## " << map << "\n";
+				}
+				dev->arm();
+				std::cout << "## armed\n";
 			}
 		}
 		catch (const std::string& err) {
