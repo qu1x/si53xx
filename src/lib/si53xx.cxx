@@ -40,21 +40,26 @@ void si53xx::disarm() {
 }
 
 void si53xx::arm(byte mask) {
-	for (std::size_t reps = 5; reps
-	&& mask && rx(218) & mask; --reps)
-		nanosleep(&rep, nullptr);
-	tx(49, rx(49) & 0x7F);
+	const byte base = rx(2) & 0x3F;
+	if (base == 38) {
+		for (std::size_t reps = 5; reps
+		&& mask && rx(218) & mask; --reps)
+			nanosleep(&rep, nullptr);
+		tx(49, rx(49) & 0x7F);
+	}
 	tx(246, 0x02);
-	nanosleep(&rst, nullptr);
-	tx(241, 0x65);
-	for (std::size_t reps = 5; reps
-	&& mask && rx(218) & (mask | SYS_CAL | PLL_LOL); --reps)
-		nanosleep(&rep, nullptr);
-	byte data[3];
-	get(235, data, sizeof data);
-	data[2] = (rx(47) & 0xFC) | (data[2] & 0x03);
-	set(45, data, sizeof data);
-	tx(49, rx(49) | 0x80);
+	if (base == 38) {
+		nanosleep(&rst, nullptr);
+		tx(241, 0x65);
+		for (std::size_t reps = 5; reps
+		&& mask && rx(218) & (mask | SYS_CAL | PLL_LOL); --reps)
+			nanosleep(&rep, nullptr);
+		byte data[3];
+		get(235, data, sizeof data);
+		data[2] = (rx(47) & 0xFC) | (data[2] & 0x03);
+		set(45, data, sizeof data);
+		tx(49, rx(49) | 0x80);
+	}
 	tx(230, 0x00);
 }
 
