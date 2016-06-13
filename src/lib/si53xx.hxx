@@ -26,10 +26,10 @@ public:
 	PIN0 = 0x70,
 	PIN1 = PIN0 + 1;
 	static const byte
-	SYS_CAL = 1 << 0,
-	LOS_CLKIN = 1 << 2,
-	LOS_FDBK = 1 << 3,
-	PLL_LOL = 1 << 4;
+	SYS_CAL = 0x01,
+	LOS_CLKIN = 0x04,
+	LOS_FDBK = 0x08,
+	PLL_LOL = 0x10;
 	void disarm();
 	void arm();
 	bool set_register_map(std::string file);
