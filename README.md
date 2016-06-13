@@ -17,7 +17,7 @@
 si53xx
 ======
 
-Interfacing si5338 or si5356 clock generator via i2c-dev or libmpsse.
+Interfacing Si5338 or Si5356 clock generator via i2c-dev or libmpsse.
 
 Installation
 ============
@@ -79,6 +79,22 @@ RTFM:
 		man si53xx
 		man si53xx-map
 		man si53xx-cmp
+
+1. Create one or more register maps as C code header files (.h) with the
+   ClockBuilder Desktop Software from Silicon Labs. Such a register map contains
+   a whole device configuration.
+
+2. Convert these .h files to .map files with the si53xx-map script. These files
+   are parsable by the si53xx-cmp script and si53xx application.
+
+3. Optionally generate transition map pairs (.pos, .neg) from two or more .map
+   files with the si53xx-cmp script. A transition map pair contains only the
+   differences necessary to be applied by the si53xx application in order to
+   switch from one register map to another while a .neg file revokes the changes
+   applied by a .pos file.
+
+4. Apply register or transition maps with the si53xx application or use its
+   built-in routines to monitor the device status or modify its interrupt-mask.
 
 Version
 =======
