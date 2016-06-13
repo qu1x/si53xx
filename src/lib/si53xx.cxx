@@ -22,6 +22,8 @@
 
 #include <time.h>
 
+const timespec si53xx::msr = { 0, 1'000'000 };
+
 const timespec si53xx::rep = { 0, 5'000'000 };
 
 const timespec si53xx::rst = { 0, 25'000'000 };
@@ -63,6 +65,9 @@ void si53xx::arm() {
 		set(45, data, sizeof data);
 		tx(49, rx(49) | 0x80);
 	}
+	tx(226, 0x04);
+	nanosleep(&msr, nullptr);
+	tx(226, 0x00);
 	tx(230, 0x00);
 }
 

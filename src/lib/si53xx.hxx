@@ -46,6 +46,7 @@ protected:
 	virtual void get(byte addr, byte* data, byte size) = 0;
 	virtual void set(byte addr, const byte* data, byte size) = 0;
 private:
+	static const timespec msr;
 	static const timespec rep;
 	static const timespec rst;
 	byte rx(byte addr) { byte data; get(addr, &data, 1); return data; }
