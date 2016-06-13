@@ -31,7 +31,7 @@ public:
 	LOS_FDBK = 1 << 3,
 	PLL_LOL = 1 << 4;
 	void disarm();
-	void arm(byte mask = LOS_CLKIN);
+	void arm();
 	bool set_register_map(std::string file);
 	std::string get_part_number();
 	bool get_interrupt();

@@ -39,9 +39,12 @@ void si53xx::disarm() {
 	tx(241, 0xE5);
 }
 
-void si53xx::arm(byte mask) {
+void si53xx::arm() {
 	const byte base = rx(2) & 0x3F;
+	byte mask = LOS_CLKIN;
 	if (base == 38) {
+		if (rx(48) & 0x40)
+			mask |= LOS_FDBK;
 		for (std::size_t reps = 5; reps
 		&& mask && rx(218) & mask; --reps)
 			nanosleep(&rep, nullptr);
