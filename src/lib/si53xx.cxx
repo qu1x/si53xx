@@ -1,18 +1,18 @@
-// This file is part of libsi53xx, see <https://qu1x.org/libsi53xx>.
+// This file is part of si53xx, see <https://qu1x.org/si53xx>.
 // 
 // Copyright (c) 2016 Rouven Spreckels <n3vu0r@qu1x.org>
 // 
-// libsi53xx is free software: you can redistribute it and/or modify
+// si53xx is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License version 3
 // as published by the Free Software Foundation on 19 November 2007.
 // 
-// libsi53xx is distributed in the hope that it will be useful,
+// si53xx is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU Affero General Public License for more details.
 // 
 // You should have received a copy of the GNU Affero General Public License
-// along with libsi53xx. If not, see <https://www.gnu.org/licenses>.
+// along with si53xx. If not, see <https://www.gnu.org/licenses>.
 
 #include "si53xx.hxx"
 
